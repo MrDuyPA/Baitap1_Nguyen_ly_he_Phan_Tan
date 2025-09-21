@@ -26,3 +26,54 @@ wsl --install -d Ubuntu
 ```
 
 Đặt Ubuntu làm mặc định:
+
+```powershell
+wsl --set-default Ubuntu
+
+```
+
+## 3. Cài wireshark
+
+```powershell
+sudo apt update
+sudo apt install tshark -y
+
+```
+
+## 4. Run project
+
+Server :
+
+```powershell
+python3 server.py
+
+```
+
+Client:
+Mở một terminal khác (cũng trong WSL)
+
+```powershell
+python3 client.py
+
+```
+
+Client đọc lệnh từ stdin, ví dụ:
+
+```powershell
+PUT user1 Alice
+GET user1
+DEL user1
+STATS
+
+```
+
+Wireshark:
+
+Mở một terminal khác ( cũng trong wsl ), sau đó chạy command
+
+```powershell
+sudo tshark -i any -f "tcp port 12345" -l -n -x
+
+```
+
+## 5. Note: Kết quả kiếm thử và phần trả lời câu hỏi bài tập trong folder report
