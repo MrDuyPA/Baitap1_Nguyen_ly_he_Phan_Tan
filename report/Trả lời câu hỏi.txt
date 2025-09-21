@@ -1,0 +1,126 @@
+Câu 1: Interface trong hệ thống phân tán là gì? Tại sao cần phải có Interface khi
+triển khai các dịch vụ?
+
+1. Khái niệm Interface trong hệ thống phân tán
+
+Interface (giao diện) là tập hợp các định nghĩa, phương thức hoặc chức năng được công bố ra bên ngoài của một dịch vụ/phần mềm, cho phép các thành phần khác trong hệ thống có thể gọi, sử dụng mà không cần biết chi tiết bên trong được cài đặt như thế nào.
+
+Trong hệ thống phân tán, interface thường được mô tả thông qua API (Application Programming Interface), IDL (Interface Definition Language) hoặc các chuẩn như gRPC, REST, SOAP,…
+
+Ví dụ:
+
+Một dịch vụ “Quản lý người dùng” có thể công bố interface gồm các hàm:
+
+createUser(name, email)
+
+getUser(id)
+
+deleteUser(id)
+Các service khác chỉ cần gọi các hàm này, không cần biết bên trong nó lưu dữ liệu ở MySQL, MongoDB hay bộ nhớ tạm.
+
+2. Tại sao cần phải có Interface khi triển khai dịch vụ?
+
+Che giấu sự phức tạp bên trong: Interface chỉ cho bên ngoài thấy cái “cửa” để truy cập, còn logic xử lý bên trong có thể rất phức tạp nhưng không cần tiết lộ.
+
+Tăng tính độc lập và tái sử dụng: Nhờ interface, các dịch vụ khác nhau có thể thay thế hoặc nâng cấp nội bộ mà không ảnh hưởng đến các thành phần đang sử dụng nó, miễn là interface không đổi.
+
+Chuẩn hóa giao tiếp trong hệ thống phân tán: Vì các thành phần có thể chạy trên nhiều máy, nhiều môi trường khác nhau. Do đó, cần một “hợp đồng” thống nhất để trao đổi dữ liệu. Interface đóng vai trò là bản hợp đồng đó.
+
+Dễ mở rộng và bảo trì: Nếu muốn nâng cấp dịch vụ, ta chỉ cần giữ nguyên interface hoặc mở rộng thêm, không cần thay đổi toàn bộ hệ thống.
+
+Bảo mật và kiểm soát truy cập: Interface có thể đóng vai trò “cổng kiểm soát”, giới hạn chỉ cho phép những thao tác được định nghĩa thay vì lộ toàn bộ nội dung nội bộ.
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------
+
+
+
+Câu 2:Hãy giải thích ý nghĩa của mã trạng thái 201 CREATED, 204
+NO_CONTENT và 404 NOT_FOUND trong giao thức KVSS.
+1. 201 CREATED
+
+Ý nghĩa: Máy chủ đã tạo mới thành công một tài nguyên (resource).
+
+Trong KVSS: khi client gửi yêu cầu PUT key=value hoặc POST để thêm dữ liệu với một key chưa tồn tại, hệ thống lưu trữ thành công thì trả về 201 CREATED.
+
+Ví dụ:
+
+Request: PUT /kv/user123 value=Alice
+
+Response: 201 CREATED → Nghĩa là cặp (user123, Alice) đã được tạo mới trong kho lưu trữ.
+
+2. 204 NO_CONTENT
+
+Ý nghĩa: Yêu cầu đã được xử lý thành công nhưng không có dữ liệu trả về trong phần body của phản hồi.
+
+Trong KVSS: thường xuất hiện khi client thực hiện một thao tác thành công không cần trả dữ liệu, chẳng hạn như DELETE key.
+
+Ví dụ:
+
+Request: DELETE /kv/user123
+
+Response: 204 NO_CONTENT → Nghĩa là key user123 đã được xóa thành công, nhưng server không cần gửi thêm nội dung nào khác.
+
+---------------------------------------------------------
+
+Câu 3: Trong bài lab KVSS, nếu client không tuân thủ quy ước Interface (ví dụ:
+thiếu version KV/1.0), server sẽ phản hồi thế nào? Tại sao phải quy định rõ ràng tình
+huống này?
+
+Nếu client không tuân thủ Interface (ví dụ thiếu KV/1.0), server sẽ trả về lỗi:
+
+400 BAD_REQUEST
+
+
+Lý do cần quy định rõ tình huống này:
+
+- Đảm bảo client–server giao tiếp thống nhất, không mơ hồ.
+
+- Giúp phát hiện sai cú pháp sớm, tránh xử lý nhầm dữ liệu.
+
+- Hỗ trợ mở rộng, nâng cấp giao thức (ví dụ lên KV/2.0) mà vẫn tương thích.
+
+-----------------------------------------------------------
+
+Câu hỏi 4: Quan sát một phiên làm việc qua Wireshark: hãy mô tả cách mà gói tin
+TCP được chia để truyền thông điệp theo “line-based protocol”.
+
+Trong quá trình quan sát bằng Wireshark, có thể thấy thông điệp từ client (ví dụ:
+
+KV/1.0 PUT user1 Alice\n
+
+
+) không nhất thiết được gửi trong một gói TCP duy nhất. TCP có thể chia nhỏ thông điệp thành nhiều segment (ví dụ phần "KV/1.0 PUT user1 " trong một gói, và "Alice\n" trong gói tiếp theo).
+
+Tuy nhiên, server không xử lý ngay khi nhận được một phần, mà chỉ ghép các byte vào bộ đệm cho đến khi gặp ký tự xuống dòng \n. Khi đó server mới coi đây là một thông điệp hoàn chỉnh và thực hiện lệnh.
+
+Điều này chứng minh rằng giao thức KVSS tuân theo line-based protocol: ranh giới thông điệp được xác định bởi ký tự xuống dòng, chứ không phụ thuộc cách TCP chia gói.
+-----------------------------------------------------------
+
+Câu 5:
+Giả sử có một client viết sai giao thức (gửi KV/1.0 POTT user42
+Alice). Server sẽ xử lý như thế nào? Kết quả này thể hiện đặc điểm gì của Interface?
+
+Nếu client gửi sai cú pháp, ví dụ:
+
+KV/1.0 POTT user42 Alice
+
+
+(lệnh POTT không hợp lệ)
+→ Server sẽ trả về:
+
+400 BAD_REQUEST
+
+
+Điều này thể hiện rằng Interface đã được quy định chặt chẽ:
+
+Chỉ những lệnh đúng định dạng mới được chấp nhận.
+
+Các sai lệch đều được phát hiện và báo lỗi thống nhất.
+
+Đảm bảo tính tương thích và tính dự đoán khi nhiều hệ thống khác nhau cùng giao tiếp

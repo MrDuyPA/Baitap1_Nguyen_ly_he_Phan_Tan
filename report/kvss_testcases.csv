@@ -1,0 +1,11 @@
+﻿STT,Request,Condition,Response
+1,KV/1.0 PUT user1 Alice,Key user1 chưa tồn tại,201 CREATED
+2,KV/1.0 GET user1,Key user1 tồn tại với value = Alice,200 OK Alice
+3,KV/1.0 PUT user1 Bob,Key user1 đã tồn tại (Alice),200 OK (value đổi thành Bob)
+4,KV/1.0 DEL user1,Key user1 tồn tại,204 NO_CONTENT
+5,KV/1.0 STATS,Hệ thống không còn key nào,200 OK count=0
+6,KV/1.0 GET user2,Key user2 chưa từng tồn tại,404 NOT_FOUND
+7,KV/1.0 DEL user2,Key user2 không tồn tại,404 NOT_FOUND
+8,PUT user3 Alice (thiếu KV/1.0),Request sai chuẩn version,426 UPGRADE_REQUIRED
+9,KV/1.0 PUT user3,Thiếu value sau key,400 BAD_REQUEST
+10,KV/1.0 HELLO world,Lệnh không hợp lệ,400 BAD_REQUEST
