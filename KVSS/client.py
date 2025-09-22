@@ -11,3 +11,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.sendall(line.encode())
         resp = s.recv(1024).decode()
         print(resp.strip())
+
