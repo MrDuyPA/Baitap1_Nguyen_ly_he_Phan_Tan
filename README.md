@@ -4,7 +4,7 @@ Bài Tập 1 nộp môn Nguyên lý hệ phân tán.
 
 # KVSS - Key Value Store Service (TCP Server/Client)
 
-Dự án này triển khai hệ thống phân tán đơn giản với **TCP server** và **client** để lưu trữ key-value trong bộ nhớ, đồng thời cho phép quan sát các request/response bằng **Wireshark** hoặc `tshark`.
+Dự án này triển khai hệ thống phân tán đơn giản với **TCP server** và **client** để lưu trữ key-value trong bộ nhớ, đồng thời cho phép quan sát các request/response bằng **Wireshark**
 
 ---
 
@@ -77,3 +77,7 @@ sudo tshark -i any -f "tcp port 12345" -l -n -x
 ```
 
 ## 5. Note: Kết quả kiếm thử và phần trả lời câu hỏi bài tập trong folder report
+
+# Microservice
+
+## Bài tập được trả lời trong report/Kube
